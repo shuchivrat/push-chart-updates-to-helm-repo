@@ -31,6 +31,8 @@ COPY --from=helm-builder /usr/local/bin/helm /usr/local/bin/helm
 COPY app.py ./
 COPY requirements.txt ./
 
+RUN chmod 644 app.py
+
 # Install Python dependencies into Lambda runtime
 RUN pip3 install -r requirements.txt -t .
 

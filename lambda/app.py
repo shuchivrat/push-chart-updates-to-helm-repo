@@ -69,7 +69,7 @@ def lambda_handler(event, context):
             if not tgz_file:
                 raise FileNotFoundError("No .tgz package found after helm package")
 
-            repo_uri = f"oci://{account_id}.dkr.ecr.{region}.amazonaws.com/{ecr_repo}"
+            repo_uri = f"oci://{account_id}.dkr.ecr.{region}.amazonaws.com/"
 
             run_command(
                 f"aws ecr get-login-password --region {region} | "
