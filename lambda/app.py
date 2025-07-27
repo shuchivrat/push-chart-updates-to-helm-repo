@@ -4,19 +4,30 @@ import json
 import tempfile
 import logging
 import re
+import sys
+import pathlib
 
 # Configure logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
+if not logger.handlers:
+    handler = logging.StreamHandler(sys.stdout)
+    formatter = logging.Formatter('[%(levelname)s] %(asctime)s %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
 
 def run_command(cmd):
     logger.info(f"Executing command: {cmd}")
     result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     if result.stdout:
         logger.info(f"STDOUT:\n{result.stdout}")
+        sys.stdout.flush()
     if result.stderr:
         logger.warning(f"STDERR:\n{result.stderr}")
+        sys.stderr.flush()
     if result.returncode != 0:
+        logger.error(f"Command error output:\n{result.stderr}")
         raise RuntimeError(f"Command failed (exit {result.returncode}): {result.stderr.strip()}")
     return result.stdout.strip()
 
@@ -45,9 +56,12 @@ def lambda_handler(event, context):
 
             #chart_file = os.path.join("repo", chart_relative_path)
             chart_file = chart_relative_path
+            
             logger.info(f"Chart file path {chart_file}")
             logger.info(f"Working directory: {os.getcwd()}")
-            logger.info(f"Directory contents: {os.listdir('.')}")
+            logger.info("Directory tree:")
+            for path in pathlib.Path(".").rglob("*"):
+                logger.info(str(path))
 
             if not os.path.exists(chart_file):
                 raise FileNotFoundError(f"Expected Chart.yaml at: {chart_file}, but it was not found")
