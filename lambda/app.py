@@ -27,7 +27,7 @@ def lambda_handler(event, context):
             raise ValueError("Missing required environment variable: GIT_REPO_URL")
 
         branch = os.environ.get('GIT_BRANCH', 'main')
-        chart_dir = os.environ.get("CHART_DIR", "charts/my-app")
+        chart_dir = os.environ.get("CHART_DIR", "charts/helm-chart-repo")
 
         account_id = os.environ.get('AWS_ACCOUNT_ID')
         region = os.environ.get('AWS_REGION')
@@ -39,10 +39,12 @@ def lambda_handler(event, context):
         with tempfile.TemporaryDirectory() as temp_dir:
             os.chdir(temp_dir)
             logger.info(f"Cloning branch '{branch}' from {repo_url}")
-            run_command(f"git clone -b {branch} {repo_url} repo")
+            run_command(f"git clone --depth 1 -b {branch} {repo_url} repo")
             os.chdir("repo")
 
-            chart_file = os.path.join(chart_dir, "Chart.yaml")
+            chart_file = os.path.join("repo",chart_dir, "Chart.yaml")
+            if not os.path.exists(chart_file):
+                raise FileNotFoundError(f"Expected Chart.yaml at: {chart_file}, but it was not found")
             with open(chart_file, "r") as f:
                 content = f.read()
 
