@@ -4,17 +4,28 @@ set -euo pipefail
 AWS_ACCOUNT_ID="$1"
 AWS_REGION="us-east-1"
 REPO_NAME="lambda-helm"
-APP_FILE="app.py"
+#APP_FILE="app.py"
 
 # Compute MD5 hash of the file
-if [ ! -f "$APP_FILE" ]; then
-  echo "Error: $APP_FILE not found."
+#if [ ! -f "$APP_FILE" ]; then
+#  echo "Error: $APP_FILE not found."
+#  exit 1
+#fi
+
+# md5sum works on Linux; use md5 on macOS
+#IMAGE_TAG=$(md5sum "$APP_FILE" | awk '{ print $1 }')  # Linux
+# IMAGE_TAG=$(md5 -q "$APP_FILE")  # macOS alternative
+
+TARGET_DIR="/root/push-charts-update-to-helm-repo/git-repo"
+
+if [ ! -d "$TARGET_DIR" ]; then
+  echo "Directory $TARGET_DIR does not exist."
   exit 1
 fi
 
-# md5sum works on Linux; use md5 on macOS
-IMAGE_TAG=$(md5sum "$APP_FILE" | awk '{ print $1 }')  # Linux
-# IMAGE_TAG=$(md5 -q "$APP_FILE")  # macOS alternative
+# Generate MD5 hash of all files in the directory (excluding .git or other ignored folders)
+IMAGE_TAG=$(find "$TARGET_DIR" -type f ! -path '*/.git/*' -exec md5sum {} + | sort | md5sum | awk '{print $1}')
+
 
 echo "Computed image tag (MD5): $IMAGE_TAG"
 
