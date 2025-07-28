@@ -39,7 +39,7 @@ def lambda_handler(event, context):
 
         branch = os.environ.get('GIT_BRANCH', 'main')
         chart_dir = os.environ.get("CHART_DIR", "charts")
-        chart_relative_path = os.environ.get("CHART_PATH", "charts/Chart.yaml")
+        chart_relative_path = os.environ.get("CHART_PATH", "Chart.yaml")
 
         account_id = os.environ.get('AWS_ACCOUNT_ID')
         region = os.environ.get('AWS_REGION')
@@ -86,7 +86,7 @@ def lambda_handler(event, context):
             with open(chart_file, "w") as f:
                 f.write(content)
 
-            run_command(f"helm package {chart_dir}")
+            run_command(f"helm package .")
 
             tgz_file = next((f for f in os.listdir(".") if f.endswith(".tgz")), None)
             if not tgz_file:
