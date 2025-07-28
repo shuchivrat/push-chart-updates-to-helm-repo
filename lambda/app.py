@@ -39,7 +39,7 @@ def lambda_handler(event, context):
 
         branch = os.environ.get('GIT_BRANCH', 'main')
         chart_dir = os.environ.get("CHART_DIR", "charts")
-        chart_relative_path = os.environ.get("CHART_PATH", "Chart.yaml")
+        chart_relative_path = os.environ.get("CHART_PATH", "charts/Chart.yaml")
 
         account_id = os.environ.get('AWS_ACCOUNT_ID')
         region = os.environ.get('AWS_REGION')
