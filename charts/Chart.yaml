@@ -1,6 +1,6 @@
 apiVersion: v2
 name: helm-chart-repo
-description: A Helm chart for deploying nginx - test
+description: A Helm chart for deploying nginx
 version: 0.1.0
 appVersion: "1.21.1"
 
