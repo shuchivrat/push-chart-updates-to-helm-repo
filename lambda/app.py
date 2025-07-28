@@ -86,7 +86,7 @@ def lambda_handler(event, context):
             with open(chart_file, "w") as f:
                 f.write(content)
 
-            run_command(f"helm package .")
+            run_command(f"helm package {chart_file}")
 
             tgz_file = next((f for f in os.listdir(".") if f.endswith(".tgz")), None)
             if not tgz_file:

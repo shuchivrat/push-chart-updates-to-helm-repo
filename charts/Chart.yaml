@@ -1,6 +1,6 @@
 apiVersion: v2
 name: helm-chart-repo
-description: A Helm chart for deploying ngix
+description: A Helm chart for deploying nix
 version: 0.1.0
 appVersion: "1.21.1"
 
